@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // fix: This module is declared with 'export =', and can only be used with a default import when using the 'allowSyntheticDefaultImports' flag.
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["vite.config.ts"]
+}

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CHUNK_SIZE, MAX_FILE_SIZE, MAX_REQUEST_NUM, calculateHash } from '~/utils'
+import { CHUNK_SIZE, MAX_FILE_SIZE, MAX_REQUEST_NUM, calculateChunkHash, calculateTinyFileHash } from '~/utils'
 
 async function onChange(e: Event) {
   const files = (e.target as HTMLInputElement).files
@@ -7,9 +7,9 @@ async function onChange(e: Event) {
     return
   if (files[0].size > MAX_FILE_SIZE) {
     const chunks = createChunk(files[0])
-    // const start = +new Date()
-    const hash = await calculateHash(chunks) as string
-    // console.log('hash', hash, (+new Date() - start) / 1000)
+    const start = +new Date()
+    const hash = await calculateChunkHash(chunks) as string
+    console.log('hash', hash, (+new Date() - start) / 1000)
 
     const res = await fetch('http://localhost:8421/preUpload', {
       method: 'POST',
@@ -46,6 +46,18 @@ async function onChange(e: Event) {
 
   else {
     console.log('文件太小不足以分片')
+    const start = +new Date()
+    const hash = await calculateTinyFileHash(files[0]) as string
+    console.log(hash, files[0].size, (+new Date() - start) / 1000)
+    const formData = new FormData()
+    formData.append('file', files[0])
+    formData.append('hash', hash)
+    fetch('http://localhost:8421/upload', {
+      method: 'POST',
+      body: formData,
+    }).then((res) => {
+      console.log('文件上传成功', console.log(res))
+    })
   }
 }
 

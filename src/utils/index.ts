@@ -7,7 +7,7 @@ export const MAX_REQUEST_NUM = 6
 // 计算hash值
 // 第一个切片和最后一个切片计算全部
 // 其余切片截取 前两个 中间两个 最后两个字节
-export async function calculateHash(fileChunk: Blob[]) {
+export async function calculateChunkHash(fileChunk: Blob[]) {
   return new Promise((resolve) => {
     const targets: Blob[] = []
     fileChunk.forEach((item, idx, self) => {
@@ -28,5 +28,17 @@ export async function calculateHash(fileChunk: Blob[]) {
       // console.log('hash', spark.end())
       resolve(spark.end())
     }
+  })
+}
+
+export async function calculateTinyFileHash(file: File) {
+  return new Promise((resolve) => {
+    const fileReader = new FileReader()
+    const spark = new SparkMD5.ArrayBuffer()
+    fileReader.onload = function (e) {
+      spark.append(e.target!.result as ArrayBuffer)
+      resolve(spark.end())
+    }
+    fileReader.readAsArrayBuffer(file)
   })
 }

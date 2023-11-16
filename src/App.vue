@@ -33,6 +33,8 @@ async function onChange(e: Event) {
         body: JSON.stringify({
           filename: files[0].name,
           chunkSize: CHUNK_SIZE,
+          mimeType: files[0].type,
+          size: files[0].size,
           hash,
         }),
         headers: {
